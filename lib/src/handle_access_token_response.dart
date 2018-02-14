@@ -71,7 +71,13 @@ Credentials handleAccessTokenResponse(
   validate(parameters['token_type'].toLowerCase() == 'bearer',
       '"$tokenEndpoint": unknown token type "${parameters['token_type']}"');
 
-  var expiresIn = (parameters['expires_in'] is String) ? int.parse(parameters['expires_in']) : parameters['expires_in'];
+  var expiresIn = (parameters['expires_in'] is String)
+      ?
+      int.parse(parameters['expires_in'], onError: (original) =>
+          validate(false, 'parameter "expires_in" was a string but could not be parsed as int, was "${parameters['expires_in']}"'))
+      :
+      parameters['expires_in'];
+
   validate(expiresIn == null || expiresIn is int,
       'parameter "expires_in" was not an int, was "$expiresIn"');
 
