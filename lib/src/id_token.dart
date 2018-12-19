@@ -76,6 +76,7 @@ class ClaimSet {
   static const String _acr = 'acr';
   static const String _amr = 'amr';
   static const String _azp = 'azp';
+  static const String _sessionState = 'session_state';
 
 
   final String issuer;
@@ -90,6 +91,7 @@ class ClaimSet {
   final String authenticationMethods;
   final String authorizedParty;
   final String jwtId;
+  final String sessionState;
   final Map<String, dynamic> other;
 
   ClaimSet._({
@@ -105,6 +107,7 @@ class ClaimSet {
     this.authenticationContextClass,
     this.authenticationMethods,
     this.authorizedParty,
+    this.sessionState,
     this.other
   });
 
@@ -136,6 +139,7 @@ class ClaimSet {
     var acr = json.remove(_acr);
     var amr = json.remove(_amr);
     var azp = json.remove(_azp);
+    var ss = json.remove(_sessionState);
 
     return new ClaimSet._(
         issuer: iss,
@@ -150,6 +154,7 @@ class ClaimSet {
         authenticationContextClass: acr,
         authenticationMethods: amr is List ? amr.join(",") : amr,
         authorizedParty: azp,
+        sessionState: ss,
         other: json);
   }
 }
