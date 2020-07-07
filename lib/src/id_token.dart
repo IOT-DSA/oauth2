@@ -3,15 +3,6 @@ import 'dart:convert';
 import 'utils.dart';
 
 class IdToken {
-  static String padBase64(String orig) {
-    var rem = orig.length % 4;
-    if (rem > 0) {
-      return orig.padRight(orig.length + (4 - rem), '=');
-    }
-
-    return orig;
-  }
-
   final JoseHeader header;
   final Map payload;
   final ClaimSet claimSet;
@@ -20,7 +11,7 @@ class IdToken {
 
   factory IdToken.fromString(String token) {
     var parts = token.split('.');
-    _validate(parts.length == 3, 'id_token string should be 3 parts. '
+    validate(parts.length == 3, 'id_token string should be 3 parts. '
         'Got ${parts.length} instead');
 
     var codec = JSON.fuse(UTF8.fuse(BASE64));
@@ -30,7 +21,7 @@ class IdToken {
       header = codec.decode(padBase64(parts[0]));
       body = codec.decode(padBase64(parts[1]));
     } catch (e) {
-      _validate(e == null, 'Error decoding id token. $e');
+      validate(e == null, 'Error decoding id token. $e');
     }
     var claim = new ClaimSet.fromJson(body);
 
@@ -113,21 +104,21 @@ class ClaimSet {
 
   factory ClaimSet.fromJson(Map json) {
     var iss = json.remove(_iss);
-    _validate(iss != null, 'Required claim: Issuer is null');
+    validate(iss != null, 'Required claim: Issuer is null');
     var sub = json.remove(_sub);
-    _validate(sub != null, 'Required claim: Subject is null');
+    validate(sub != null, 'Required claim: Subject is null');
     var aud = json.remove(_aud);
-    _validate(aud != null, 'Required claim: Audience is null');
+    validate(aud != null, 'Required claim: Audience is null');
     if (aud is String) {
       aud = [aud];
     }
 
     var expS = json.remove(_exp);
-    _validate(expS != null, 'Required claim: Expiration Time is null');
+    validate(expS != null, 'Required claim: Expiration Time is null');
     DateTime exp = dateFromSeconds(expS);
 
     var iatS = json.remove(_iat);
-    _validate(iatS != null, 'Required claim: Issued At Time is null');
+    validate(iatS != null, 'Required claim: Issued At Time is null');
     DateTime iat = dateFromSeconds(iatS);
 
     var nbfS = json.remove(_nbf);
@@ -157,9 +148,4 @@ class ClaimSet {
         sessionState: ss,
         other: json);
   }
-}
-
-void _validate(bool condition, String message) {
-  if (condition) return;
-  throw new FormatException('Invalid ID Token. $message');
 }

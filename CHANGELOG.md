@@ -1,3 +1,8 @@
+# 1.1.3
+
+* Add `LogoutToken` support, as passed by 
+[OIDC Backchannel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html).
+
 # 1.1.0
 
 * Add a `delimiter` parameter to `new AuthorizationCodeGrant()`, `new
